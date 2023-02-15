@@ -1,0 +1,56 @@
+.borderGrid{
+     border: 3px solid black;
+     padding: 15px;
+     text-align: center;
+}
+.grid{
+     display:grid;
+     grid-template-columns: repeat(7, 1fr);
+     padding:0 10px;
+     
+}
+.boxContent{
+     border: 1.2px solid black;
+     min-width:12vw;
+     min-height:20vh;
+     padding:3px;
+     background-color: #ffffff;
+}
+.boxContent p{
+     display:flex;
+     justify-content: right;
+     margin:0;
+}
+.boxContent:hover{
+     background-color: #e7f4ff;
+     cursor:pointer;
+}
+
+.dayBox{
+     border: 1.2px solid black;
+     margin: 0;
+     background-color: #ffffff;
+}
+.dayText{
+     text-align: left;
+}
+
+.monthName{
+     text-align: center;
+}
+
+.currentDay{
+     border: 1.2px solid black;
+     min-width:12vw;
+     min-height:20vh;
+     padding:3px;
+     background-color: #e7f4ff;
+}
+.currentDay p{
+     display:flex;
+     justify-content: right;
+     margin:0;
+}
+.currentDay:hover{
+     cursor:pointer;
+}
