@@ -9,7 +9,7 @@
      padding:0 10px;
      
 }
-.boxContent{
+.boxContent {
      border: 1.2px solid black;
      min-width:12vw;
      min-height:20vh;
@@ -25,7 +25,13 @@
      background-color: #e7f4ff;
      cursor:pointer;
 }
-
+.grayBox{
+     background-color: #e1e1e1 !important;
+     cursor:default !important;
+}
+.currentDay{
+     background-color: #e7f4ff !important;
+}
 .dayBox{
      border: 1.2px solid black;
      margin: 0;
@@ -39,18 +45,3 @@
      text-align: center;
 }
 
-.currentDay{
-     border: 1.2px solid black;
-     min-width:12vw;
-     min-height:20vh;
-     padding:3px;
-     background-color: #e7f4ff;
-}
-.currentDay p{
-     display:flex;
-     justify-content: right;
-     margin:0;
-}
-.currentDay:hover{
-     cursor:pointer;
-}
