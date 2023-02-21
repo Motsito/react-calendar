@@ -29,9 +29,13 @@
      background-color: #e1e1e1 !important;
      cursor:default !important;
 }
+.today{
+     background-color: rgb(234, 188, 234) !important;
+}
 .currentDay{
      background-color: #e7f4ff !important;
 }
+
 .dayBox{
      border: 1.2px solid black;
      margin: 0;
@@ -45,3 +49,12 @@
      text-align: center;
 }
 
+ul{
+     margin-left:0px;
+     padding-left:0;
+     text-align: center;
+}
+.dayblop{
+     display:flex;
+     margin-left:1em;
+}

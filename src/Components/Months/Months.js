@@ -1,44 +1,53 @@
-import {React, useState, useEffect} from 'react'
+import {React, useState, useEffect, useContext} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import "./Months.css"
+import "./Months.css";
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import GlobalContext from "../../context/GlobalContext"
 
 export default function Months() {
+
+   const { 
+      appointmentsList, 
+      showModal, 
+      selectedDay,
+      currentMonth,
+      date,
+      firstDay,
+      setFirstDay,
+      currentYear,
+      setCurrentYear,
+      setCurrentMonth,
+      setSelectedDay,
+      setShowModal
+   } = useContext(GlobalContext);
+
 
    // months information
 
    const months = [
-      {id:1, name:'January', days:31},
-      {id:2, name:'February', days:28},
-      {id:3, name:'March', days:31},
-      {id:4, name:'April', days:30},
-      {id:5, name:'May', days:31},
-      {id:6, name:'June', days:30},
-      {id:7, name:'July', days:31},
-      {id:8, name:'August', days:31},
-      {id:9, name:'September', days:30},
-      {id:10, name:'October', days:31},
-      {id:11, name:'November', days:30},
-      {id:12, name:'December', days:31}
-   ]
-   const [selectedDay, setSelectedDay] = useState(null)
-   const [currentMonth, setCurrentMonth] = useState(0)
-   const [currentYear, setCurrentYear] = useState(2022)
-   const [firstDay, setFirstDay] = useState(1);
-   const [lastDay, setLastDay] = useState((months[currentMonth].days + firstDay) % 7 + 1)
+      'January', 
+      'February', 
+      'March', 
+      'April', 
+      'May', 
+      'June', 
+      'July', 
+      'August', 
+      'September', 
+      'October', 
+      'November', 
+      'December'
+   ];
 
-   const monthTryal = Array.from(
+   const [monthboxes, setMonthBoxes] = useState(Array.from(
       { length: 42 }, (_, i) => (
          { 
-            id: i + 1, 
-            date: "",//`${currentYear}-${(currentMonth+1) <= 9 ? "0" + (currentMonth+1) : (currentMonth+1)}-${(i+1) <= 9 ? "0" + (i+1) : (i+1)}`, 
-            content: [], 
-            type: "",//("current") ? "boxContent" : "grayBox boxContent"
+            id: i + 1
          }
-      ));
-
+      )))
+      const [clickCount, setClickCount] = useState(0);
 // key listeners for the user to move between days
 
    useEffect(() => {
@@ -63,37 +72,77 @@ export default function Months() {
       };
    }, []);
 
+   const boxClick = (index, currentBox, currentMonth, currentYear) => {
+
+      if (clickCount === 1) {
+         setShowModal(true);
+      } else if (clickCount > 1 || index !== setSelectedDay) {
+         setClickCount(0);
+         setShowModal(false)
+      }
+      setClickCount((prev)=>prev + 1);
+      setSelectedDay(index);
+   };
+
+   //function that gives ammount of days based in date methods
+
+   const getAmmountDays = (year, month) => {
+      const firstDayOfNextMonth = new Date(year, month + 1, 1);
+      const lastDayOfMonth = new Date(firstDayOfNextMonth - 1);
+      const daysInMonth = lastDayOfMonth.getDate();
+      return daysInMonth
+   }
+   
    // functions that allow next and back button change month
 
-
    const pastMonth = () => {
-      if(currentMonth>0){
-         setCurrentMonth(currentMonth - 1)
+      if(currentMonth > 0 && currentMonth <= 11){
+         setCurrentMonth((prev)=>{return prev - 1})
+         setFirstDay(new Date(currentYear, currentMonth - 1, 1).getDay())
          setSelectedDay(null)
-      }else{
-         return
+      }else if (currentMonth === 0){
+         setCurrentMonth(11)
+         setCurrentYear((prev) => prev - 1)
+         setFirstDay(new Date(currentYear - 1, 11, 1).getDay())
+         setSelectedDay(null)
       }
    }
 
    const nextMonth = () => {
-      if(currentMonth<11){
-         setCurrentMonth(currentMonth + 1)
+      console.log(appointmentsList)
+      if(currentMonth >= 0 && currentMonth <= 10){
+         setCurrentMonth((prev)=>{return prev + 1})
+         setFirstDay(new Date(currentYear, currentMonth + 1, 1).getDay())
          setSelectedDay(null)
-         setFirstDay((months[currentMonth].days % 7))
-         console.log(firstDay)
-      }else{
-         return
+      }else if (currentMonth === 11){
+         setCurrentMonth(0)
+         setCurrentYear((prev) => prev + 1)
+         setFirstDay(new Date(currentYear + 1, 0, 1).getDay())
+         setSelectedDay(null)
       }
    }
 
+   //function that retrieves appointments info
+   const getAppointments = (index,day,month) => {
+      return appointmentsList.map((task) => {
+         let taskDate = new Date(task.time);
+         let taskMonth = taskDate.getMonth();
+         let taskDay = taskDate.getDate();
+         if(taskMonth === month && taskDay === day){
+            return (<li className='dayblop' variant="secondary" key={index*month*day}>-{task.name}</li>)
+         }
+      })
+   }
+
+
 //function that will add the needed class for the specific day
 
-
-const getClassNames = (dayIndex, currentBox, currentDays, notAvailableDaysHelper) => {
-   const classNames = {
-      boxContent: true,
-      currentDay : selectedDay === dayIndex,
-      grayBox: notAvailableDaysHelper
+   const getClassNames = (dayIndex, currentBox, currentDays, notAvailableDaysHelper) => {
+      const classNames = {
+         boxContent: true,
+         currentDay : selectedDay === dayIndex,
+         grayBox: notAvailableDaysHelper,
+         today: date.getDate() === currentBox - firstDay && date.getMonth() === currentMonth && date.getFullYear() === currentYear
    }
 
    return Object.keys(classNames)
@@ -105,29 +154,33 @@ const getClassNames = (dayIndex, currentBox, currentDays, notAvailableDaysHelper
 
 const getDayNumber = (index, 
    currentBox, 
-   currentDays, 
-   notAvailableDaysHelper
+   currentDays,
+   pastMonthDays
    ) => {
    if(currentBox <= firstDay){
-      console.log("primer dia", firstDay, "caja actual", currentBox)
-      return currentBox
+      return pastMonthDays - firstDay + currentBox;
       }else if(currentBox > firstDay && currentBox <= (currentDays+firstDay)){
          return currentBox - firstDay
       }else if (currentBox > (currentDays+firstDay)){
          return currentBox - firstDay - currentDays
       }
-
    return currentBox
 }
 
 //********************          tryall             ********************
 
-
 const makeDays = () =>{
-   return monthTryal.map((_, index)=>{
+   return monthboxes.map((_, index)=>{
       let currentBox = index + 1;
-      let currentDays = months[currentMonth].days;
-      let notAvailableDaysHelper = (firstDay !== 1 && currentBox <= firstDay) || currentBox < firstDay || currentBox > currentDays
+      let currentDays = getAmmountDays(currentYear, currentMonth);
+      let notAvailableDaysHelper = (currentBox <= firstDay) || currentBox < firstDay || currentBox > (currentDays + firstDay)
+      let pastMonthDays = () =>{
+         if(currentMonth > 0 && currentMonth <= 11){
+            return getAmmountDays(currentYear, currentMonth - 1)
+         }else if (currentMonth === 0){
+            return getAmmountDays(currentYear - 1, 11)
+         }
+      }
       return(
          <div className={
             getClassNames(
@@ -137,25 +190,27 @@ const makeDays = () =>{
                notAvailableDaysHelper
             )} 
             key={index} 
-            onClick={()=>{setSelectedDay(index)}
+            onClick={()=>{
+               boxClick(
+                  index,
+                  currentBox - firstDay,
+                  currentMonth,
+                  currentYear)}
             }
          >
          <p>{getDayNumber(
                index, 
                currentBox, 
-               currentDays, 
-               notAvailableDaysHelper
+               currentDays,
+               pastMonthDays(),
             )}
          </p>
          <div className='dayText'>
-            <ul>{monthTryal[1].content
-                  .map((task,indexes) => {
-                     return (
-                           <li>{monthTryal[1].content[indexes]}</li>
-                     )
-                  })}
-                  {monthTryal[index].date}
-            </ul>
+            <ul>
+               {
+                  getAppointments(index, currentBox - firstDay, currentMonth)
+               }
+            </ul> 
          </div>
       </div>
       )
@@ -163,27 +218,6 @@ const makeDays = () =>{
 
 }
 
-
-// function that generates  day boxes
-   // const createDays = () => {
-   //    const days = [];
-
-   //    for(let i = 1; i <= months[currentMonth].days; i++){
-   //       days.push(
-   //          <div className={getClassNames(i)} key={i} 
-   //             onClick={
-   //                ()=>{console.log("yes", i)
-   //                setSelectedDay(i)
-   //                console.log(selectedDay)
-   //             }
-   //             }>
-   //             <p>{i}</p>
-   //             <div className='dayText'> check</div>
-   //          </div>
-   //       )
-   //    }
-   //    return days
-   // }
    return (
       <div className='borderGrid'> 
          <div>
@@ -193,8 +227,9 @@ const makeDays = () =>{
                   <Button variant="light border" onClick={()=>nextMonth()}>Next</Button>
                </Col>
                <Col xs lg="8">
-               {months[currentMonth].name}{firstDay}
+               {months[currentMonth]}
                </Col>
+               <Col>{currentYear}</Col>
             </Row>
          </div>
          <div className='grid'>
