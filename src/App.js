@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './App.css';
 import Months from './Components/Months/Months';
 import GlobalContext from './context/GlobalContext';
@@ -36,7 +37,6 @@ function App() {
    const saveAppointment = (appointments) => {
       console.log('Saved appointments:', appointments);
    };
-
 
    return (
       <GlobalContext.Provider 

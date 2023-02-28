@@ -1,20 +1,31 @@
-.borderGrid{
-     border: 3px solid black;
-     padding: 15px;
-     text-align: center;
-}
+
 .grid{
      display:grid;
      grid-template-columns: repeat(7, 1fr);
      padding:0 10px;
-     
 }
+.grid > p:nth-child(1) {
+     border-top-left-radius: 8px; 
+}
+.grid > p:nth-child(7) {
+     border-top-right-radius: 8px; 
+}
+
+.grid > div:nth-child(43) {
+     border-bottom-left-radius: 8px;
+}
+
+.grid > div:nth-child(49) {
+     border-bottom-right-radius: 8px;
+}
+
 .boxContent {
      border: 1.2px solid black;
-     min-width:12vw;
-     min-height:20vh;
+     min-width:10vw;
+     min-height:14vh;
      padding:3px;
      background-color: #ffffff;
+     user-select: none;
 }
 .boxContent p{
      display:flex;
@@ -40,21 +51,23 @@
      border: 1.2px solid black;
      margin: 0;
      background-color: #ffffff;
+     text-align: center;
 }
 .dayText{
-     text-align: left;
+     display: flex;
+     border: 1px solid black;
+     border-radius: 10px;
+     margin-top:3px;
+     padding-left:5px;
+     width:auto;
+}
+.onModalDayText{
+     display: flex;
+     justify-content: space-between;
+     border-bottom: 1.2px solid #6C757D;
+     border-radius: 3.4px;
+     margin-top:3px;
+     padding-left:5px;
+     width:60%;
 }
 
-.monthName{
-     text-align: center;
-}
-
-ul{
-     margin-left:0px;
-     padding-left:0;
-     text-align: center;
-}
-.dayblop{
-     display:flex;
-     margin-left:1em;
-}

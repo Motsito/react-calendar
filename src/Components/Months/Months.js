@@ -1,5 +1,4 @@
 import {React, useState, useEffect, useContext} from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'; 
 import "./Months.css";
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -72,7 +71,7 @@ export default function Months() {
       };
    }, []);
 
-   const boxClick = (index, currentBox, currentMonth, currentYear) => {
+   const boxClick = (index, currentBox,currentDays) => {
 
       if (clickCount === 1) {
          setShowModal(true);
@@ -80,8 +79,17 @@ export default function Months() {
          setClickCount(0);
          setShowModal(false)
       }
-      setClickCount((prev)=>prev + 1);
-      setSelectedDay(index);
+      if(index >= firstDay && currentBox <= currentDays ){
+         setSelectedDay(index);
+      }else{
+         setClickCount(0);
+         setShowModal(false)
+         return 
+      }
+
+   setClickCount((prev)=>prev + 1);
+
+      
    };
 
    //function that gives ammount of days based in date methods
@@ -122,17 +130,6 @@ export default function Months() {
       }
    }
 
-   //function that retrieves appointments info
-   const getAppointments = (index,day,month) => {
-      return appointmentsList.map((task) => {
-         let taskDate = new Date(task.time);
-         let taskMonth = taskDate.getMonth();
-         let taskDay = taskDate.getDate();
-         if(taskMonth === month && taskDay === day){
-            return (<li className='dayblop' variant="secondary" key={index*month*day}>-{task.name}</li>)
-         }
-      })
-   }
 
 
 //function that will add the needed class for the specific day
@@ -140,8 +137,8 @@ export default function Months() {
    const getClassNames = (dayIndex, currentBox, currentDays, notAvailableDaysHelper) => {
       const classNames = {
          boxContent: true,
-         currentDay : selectedDay === dayIndex,
          grayBox: notAvailableDaysHelper,
+         currentDay : selectedDay === dayIndex,
          today: date.getDate() === currentBox - firstDay && date.getMonth() === currentMonth && date.getFullYear() === currentYear
    }
 
@@ -166,6 +163,17 @@ const getDayNumber = (index,
       }
    return currentBox
 }
+   //function that retrieves appointments info
+   const getAppointments = (index,day,month) => {
+      return appointmentsList.map((task) => {
+         let taskDate = new Date(task.time);
+         let taskMonth = taskDate.getMonth();
+         let taskDay = taskDate.getDate();
+         if(taskMonth === month && taskDay === day){
+            return (<span className='dayText' key={Math.floor(Math.random() * index)}>{task.name}</span>)
+         }
+      })
+   }
 
 //********************          tryall             ********************
 
@@ -194,8 +202,7 @@ const makeDays = () =>{
                boxClick(
                   index,
                   currentBox - firstDay,
-                  currentMonth,
-                  currentYear)}
+                  currentDays)}
             }
          >
          <p>{getDayNumber(
@@ -205,12 +212,10 @@ const makeDays = () =>{
                pastMonthDays(),
             )}
          </p>
-         <div className='dayText'>
-            <ul>
+         <div>
                {
                   getAppointments(index, currentBox - firstDay, currentMonth)
                }
-            </ul> 
          </div>
       </div>
       )
@@ -219,17 +224,23 @@ const makeDays = () =>{
 }
 
    return (
-      <div className='borderGrid'> 
+      <div className='borderGrid my-3'> 
          <div>
-            <Row className='monthName mb-2'>
-               <Col xs lg="2">
-                  <Button variant="light border" onClick={()=>pastMonth()}>Back</Button>
-                  <Button variant="light border" onClick={()=>nextMonth()}>Next</Button>
+            <Row className='text-center mb-2'>
+               <Col xs>
+                  <Button variant="primary border" size="lg" className='px-5 py-2' onClick={()=>pastMonth()}>
+                     {`<`}
+                  </Button>
                </Col>
-               <Col xs lg="8">
-               {months[currentMonth]}
+               <Col>
+                  <h2>{months[currentMonth]}  {currentYear}</h2>
                </Col>
-               <Col>{currentYear}</Col>
+               <Col xs>
+                  <Button variant="primary border" size="lg" className='px-5 py-2' onClick={()=>nextMonth()}>
+                     {`>`}
+                  </Button>
+               </Col>
+               
             </Row>
          </div>
          <div className='grid'>
