@@ -47,7 +47,7 @@ function EventModal(props) {
             <span>{task.name}</span>
             <div>
                <span>{taskTime} </span>
-               <Button className='mb-1 ms-2' variant="danger" size="sm" onClick={() => {deleteAppointment(appointmentsList[index].name)}}>
+               <Button className='mb-1 ms-2' variant="danger" size="sm" onClick={() => {deleteAppointment(task.name)}}>
                   <FontAwesomeIcon icon={faXmark} size="lg" />
                </Button>
             </div>
